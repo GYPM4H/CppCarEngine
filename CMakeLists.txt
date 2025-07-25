@@ -4,4 +4,9 @@ project(CppCarEngine)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(CppCarEngine main.cpp
-        include/crankshaft.h)
+        include/crankshaft.hpp
+        src/crankshaft.cpp
+        include/utils.hpp
+        src/utils.cpp)
+
+include_directories(${CMAKE_SOURCE_DIR}/include)
