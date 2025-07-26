@@ -7,6 +7,8 @@ add_executable(CppCarEngine main.cpp
         include/crankshaft.hpp
         src/crankshaft.cpp
         include/utils.hpp
-        src/utils.cpp)
+        src/utils.cpp
+        include/connecting_rod.hpp
+        src/connecting_rod.cpp)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
