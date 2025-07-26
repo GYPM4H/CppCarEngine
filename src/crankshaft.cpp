@@ -3,10 +3,11 @@
 #include <iomanip>
 
 
-Crankshaft::Crankshaft(const int &rpm) {
+Crankshaft::Crankshaft(const int &rpm, const float &radius) {
     this->current_angle = 0;
     this->current_stage = Stage::Intake;
     this->rpm = rpm;
+    this->radius = radius;
     this->angular_velocity = compute_angular_velocity(this->rpm);
 }
 
@@ -34,6 +35,18 @@ void Crankshaft::rotate(const float &delta) {
     else if (this->current_angle <= 4 * M_PI) {
         this->current_stage = Stage::Exhaust;
     }
+}
+
+float Crankshaft::get_radius() const {
+    return this->radius;
+}
+
+float Crankshaft::get_angular_velocity() const {
+    return this->angular_velocity;
+}
+
+float Crankshaft::get_rad_angle() const {
+    return this->current_angle;
 }
 
 std::ostream & operator<<(std::ostream &os, const Crankshaft &c) {
