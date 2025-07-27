@@ -4,10 +4,10 @@
 
 int main() {
     constexpr int rpm = 2000;
-    constexpr float delta = 0.001;
     constexpr int run_time = 100;
     constexpr float shaft_radius = 10;
     constexpr float rod_length = 15;
+    constexpr float delta = 0.001;
 
     Crankshaft crankshaft(rpm, shaft_radius);
     ConnectingRod connecting_rod(rod_length);
