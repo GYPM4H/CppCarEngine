@@ -24,14 +24,16 @@ int main() {
     Piston piston;
 
     sf::CircleShape crankshaft_obj(50.f);
-    crankshaft_obj.setPosition(sf::Vector2f((width / 2) - 50, (height / 2) - 50));
-    crankshaft_obj.setPointCount(50);
+    crankshaft_obj.setOrigin({50, 50});
+    crankshaft_obj.setPosition({width / 2, height / 2});
     crankshaft_obj.setFillColor(sf::Color::Green);
 
+    sf::Vector2f crank_center_pos = crankshaft_obj.getPosition();
+    float crank_center_x = crank_center_pos.x;
+    float crank_center_y = crank_center_pos.y;
 
     sf::RectangleShape connecting_rod_obj({50.f, 5.f});
-    connecting_rod_obj.setPosition(sf::Vector2f(width / 2, height / 2));
-
+    connecting_rod_obj.setPosition({crank_center_x, crank_center_y});
 
     sf::RectangleShape piston_obj({75.f, 75.f});
 
@@ -47,15 +49,14 @@ int main() {
             }
         }
 
-        for (int i = 0; i < run_time; i++) {
-            crankshaft.rotate(delta);
-            connecting_rod.update_top_rod_pos(crankshaft);
-            piston.set_position(connecting_rod.get_top_rod_pos());
+        crankshaft.rotate(delta);
 
-            std::cout << connecting_rod;
-            std::cout << crankshaft;
-            std::cout << piston;
-        }
+        connecting_rod.update_top_rod_pos(crankshaft);
+        piston.set_position(connecting_rod.get_top_rod_pos());
+
+        std::cout << connecting_rod;
+        std::cout << crankshaft;
+        std::cout << piston;
 
         window.clear(sf::Color::Black);
         window.draw(crankshaft_obj);

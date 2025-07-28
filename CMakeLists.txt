@@ -3,6 +3,8 @@ project(CppCarEngine)
 
 set(CMAKE_CXX_STANDARD 20)
 
+find_package(SFML 3 COMPONENTS System Graphics Window)
+
 add_executable(CppCarEngine
         main.cpp
         include/crankshaft.hpp
@@ -15,8 +17,4 @@ add_executable(CppCarEngine
         src/piston.cpp)
 
 target_include_directories(CppCarEngine PUBLIC include)
-
-set(CMAKE_PREFIX_PATH C:/SFML_3/lib/cmake/SFML)
-find_package(SFML REQUIRED COMPONENTS Audio Graphics Main Network System Window)
-target_link_libraries(CppCarEngine PRIVATE
-        SFML::Graphics SFML::Window SFML::System)
+target_link_libraries(CppCarEngine PRIVATE SFML::Graphics SFML::Window SFML::System)
