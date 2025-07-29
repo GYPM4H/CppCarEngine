@@ -1,23 +1,24 @@
 #ifndef PISTON_HPP
 #define PISTON_HPP
-#include <iosfwd>
 
-#endif //PISTON_HPP
-
-#include <iostream>
+#include <SFML/Graphics.hpp>
 
 class Piston {
-public:
-    float position;
-
-    explicit Piston(): position(0) {
-    }
+    public:
+    explicit Piston(sf::Vector2f size);
 
     ~Piston() = default;
 
-    void set_position(float pos);
+    [[nodiscard]] sf::Vector2f get_position() const;
+    [[nodiscard]] sf::Vector2f get_size() const;
+
+    void set_position(sf::Vector2f pos);
 
     friend std::ostream& operator<<(std::ostream& os, const Piston& p);
 
-
+    private:
+    sf::Vector2f position;
+    sf::Vector2f size;
 };
+
+#endif
