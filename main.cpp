@@ -2,45 +2,32 @@
 #include <crankshaft.hpp>
 #include <connecting_rod.hpp>
 #include <piston.hpp>
+#include <crankshaft_renderer.hpp>
 #include <SFML/Graphics.hpp>
+#include <config.hpp>
+#include <window_manager.hpp>
+
+#include "connecting_rod_renderer.hpp"
+#include "piston_renderer.hpp"
 
 int main() {
-    constexpr int rpm = 2000;
-    constexpr int run_time = 100;
-    constexpr float shaft_radius = 10;
-    constexpr float rod_length = 15;
-    constexpr float delta = 0.001;
+    WindowManager window_manager(Screen::width, Screen::height, Screen::title, Screen::antiAliasingLevel);
+    auto& window = window_manager.get();
+    const sf::Vector2f window_center = window_manager.get_center();
 
-    sf::RenderWindow window(sf::VideoMode({800, 600}), "MyWindow");
-    sf::Vector2u window_size = window.getSize();
+    Crankshaft crankshaft(Physics::rpm, Physics::shaft_radius);
+    crankshaft.set_crankshaft_center(window_center);
+    CrankshaftRenderer crankshaft_renderer(crankshaft, sf::Color::White);
 
-    float width = window_size.x;
-    float height = window_size.y;
+    ConnectingRod connecting_rod(Physics::rod_size);
+    connecting_rod.set_current_bottom_rod_pos(crankshaft.get_crank_pin_position());
+    ConnectingRodRenderer connecting_rod_renderer(connecting_rod, sf::Color::Green);
 
-    std::cout << width << '\n' << height << '\n';
+    Piston piston(Physics::piston_size);
+    constexpr float piston_offset = -150.0f;
+    piston.set_position({crankshaft.get_center_position().x, crankshaft.get_center_position().y + piston_offset});
+    PistonRenderer piston_renderer(piston, sf::Color::Red);
 
-    Crankshaft crankshaft(rpm, shaft_radius);
-    ConnectingRod connecting_rod(rod_length);
-    Piston piston;
-
-    sf::CircleShape crankshaft_obj(50.f);
-    crankshaft_obj.setOrigin({50, 50});
-    crankshaft_obj.setPosition({width / 2, height / 2});
-    crankshaft_obj.setFillColor(sf::Color::Green);
-
-    sf::Vector2f crank_center_pos = crankshaft_obj.getPosition();
-    float crank_center_x = crank_center_pos.x;
-    float crank_center_y = crank_center_pos.y;
-
-    sf::RectangleShape connecting_rod_obj({50.f, 5.f});
-    connecting_rod_obj.setPosition({crank_center_x, crank_center_y});
-
-    sf::RectangleShape piston_obj({75.f, 75.f});
-
-    std::cout << "Crankshaft radius is: " << crankshaft.get_radius() << '\n';
-    std::cout << "Crankshaft angular velocity is: " << crankshaft.get_angular_velocity() << '\n';
-    std::cout << "Connecting Rod length is: " << connecting_rod.get_rod_length() << '\n';
-    float piston_position;
 
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {
@@ -48,20 +35,24 @@ int main() {
                 window.close();
             }
         }
-
-        crankshaft.rotate(delta);
-
-        connecting_rod.update_top_rod_pos(crankshaft);
-        piston.set_position(connecting_rod.get_top_rod_pos());
-
-        std::cout << connecting_rod;
-        std::cout << crankshaft;
-        std::cout << piston;
-
         window.clear(sf::Color::Black);
-        window.draw(crankshaft_obj);
-        window.draw(connecting_rod_obj);
-        window.draw(piston_obj);
+
+        crankshaft.rotate(Physics::delta);
+        connecting_rod.update_pos(crankshaft);
+        piston.set_position(connecting_rod.get_current_top_rod_pos());
+
+        crankshaft_renderer.sync(crankshaft);
+        connecting_rod_renderer.sync(connecting_rod);
+        piston_renderer.sync(piston);
+
+        crankshaft_renderer.draw(window);
+        connecting_rod_renderer.draw(window);
+        piston_renderer.draw(window);
+
+        // std::cout << connecting_rod;
+        // std::cout << crankshaft;
+        // std::cout << piston;
+
         window.display();
     }
 
